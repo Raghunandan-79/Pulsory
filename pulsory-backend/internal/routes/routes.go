@@ -1,6 +1,9 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/Raghunandan-79/pulsory/internal/handlers"
+	"github.com/gin-gonic/gin"
+)
 
 func RegisterRoutes(router *gin.Engine) {
 	api := router.Group("api")
@@ -9,15 +12,13 @@ func RegisterRoutes(router *gin.Engine) {
 		{
 			user := v1.Group("user")
 			{	
-				user.POST("/signup", func(ctx *gin.Context) {
-
-				})
+				user.POST("/signup", handlers.Signup)
 			}
 
 			website := v1.Group("website")
 			{
 				website.POST("/create-website", func(ctx *gin.Context) {
-					
+
 				})
 			}
 		}
