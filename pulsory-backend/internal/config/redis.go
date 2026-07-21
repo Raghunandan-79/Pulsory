@@ -30,10 +30,10 @@ func ConnectRedis() {
 		log.Fatalf("Failed to connect to Redis: %v", err)
 	}
 	
-	log.Println("Redis connected successfully")
+	log.Println("✅ Redis connected successfully")
 }
 
-// Optional: Consumer group functions matching your TypeScript redisstream
+// XReadGroup - Read messages from consumer group
 func XReadGroup(consumerGroup, workerId string, count int64) ([]redis.XMessage, error) {
 	ctx := context.Background()
 	streamName := "betteruptime:website"
@@ -57,6 +57,7 @@ func XReadGroup(consumerGroup, workerId string, count int64) ([]redis.XMessage, 
 	return results[0].Messages, nil
 }
 
+// XAck - Acknowledge a single message
 func XAck(consumerGroup, eventId string) error {
 	ctx := context.Background()
 	streamName := "betteruptime:website"
@@ -64,7 +65,12 @@ func XAck(consumerGroup, eventId string) error {
 	return RedisClient.XAck(ctx, streamName, consumerGroup, eventId).Err()
 }
 
+// XAckBulk - Acknowledge multiple messages
 func XAckBulk(consumerGroup string, eventIds []string) error {
+	if len(eventIds) == 0 {
+		return nil
+	}
+	
 	ctx := context.Background()
 	streamName := "betteruptime:website"
 	
