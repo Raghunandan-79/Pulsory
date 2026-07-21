@@ -2,7 +2,6 @@ package pusher
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 
@@ -39,39 +38,30 @@ func (p *PusherService) SyncWebsites() error {
 		return nil
 	}
 	
-	// Prepare data for Redis stream using pipeline
-	streamKey := "websites:stream"
+	// Stream name matching your TypeScript code
+	streamName := "betteruptime:website"
+	
+	// Use pipeline for bulk operations
 	pipe := p.redis.Pipeline()
 	
 	for _, website := range websites {
-		// Create the data payload matching your TypeScript structure
-		data := map[string]interface{}{
-			"id":  website.ID,
-			"url": website.URL,
-		}
-		
-		// Convert to JSON string (or use map directly)
-		jsonData, err := json.Marshal(data)
-		if err != nil {
-			log.Printf("Failed to marshal website %s: %v", website.ID, err)
-			continue
-		}
-		
-		// Add to Redis stream
+		// Add to Redis stream with the same structure as your TypeScript code
 		pipe.XAdd(ctx, &redis.XAddArgs{
-			Stream: streamKey,
+			Stream: streamName,
+			ID:     "*", // Auto-generate ID like in your TypeScript
 			Values: map[string]interface{}{
-				"data": string(jsonData),
+				"url": website.URL,
+				"id":  website.ID,
 			},
 		})
 	}
 	
-	// Execute all commands in pipeline
+	// Execute all commands
 	_, err := pipe.Exec(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to add to Redis stream: %w", err)
 	}
 	
-	log.Printf("Synced %d websites to Redis stream", len(websites))
+	log.Printf("Synced %d websites to Redis stream '%s'", len(websites), streamName)
 	return nil
 }

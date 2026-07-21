@@ -9,10 +9,10 @@ import (
 )
 
 func main() {
-	// Connect to database (your existing config)
+	// Connect to database
 	config.ConnectDB()
 	
-	// Initialize Redis connection
+	// Connect to Redis
 	config.ConnectRedis()
 	
 	// Create pusher service
