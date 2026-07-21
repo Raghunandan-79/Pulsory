@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/Raghunandan-79/pulsory/internal/handlers"
+	"github.com/Raghunandan-79/pulsory/internal/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,10 +18,10 @@ func RegisterRoutes(router *gin.Engine) {
 			}
 
 			website := v1.Group("website")
+			website.Use(middleware.AuthMiddleware())
 			{
-				website.POST("/create-website", func(ctx *gin.Context) {
-
-				})
+				website.POST("/create-website", handlers.CreateWebsite)
+				website.GET("/status/:websiteId", handlers.GetWebsiteById)
 			}
 		}
 	}
