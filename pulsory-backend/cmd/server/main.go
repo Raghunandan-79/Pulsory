@@ -1,15 +1,30 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"log"
+
+	"github.com/Raghunandan-79/pulsory/internal/config"
+	"github.com/Raghunandan-79/pulsory/internal/models"
+	"github.com/Raghunandan-79/pulsory/internal/routes"
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
+	config.ConnectDB()
+
+	err := config.DB.AutoMigrate(
+		&models.User{},
+		&models.Region{},
+		&models.Website{},
+		&models.WebsiteTick{},
+	)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	router := gin.Default();
-
-	router.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"message": "healthy",
-		})
-	})
-
+	routes.RegisterRoutes(router)
+	
 	router.Run(":8080")
 }

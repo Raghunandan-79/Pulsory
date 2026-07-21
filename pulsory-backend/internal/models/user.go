@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 )
 
@@ -9,6 +11,9 @@ type User struct {
 
 	Username string `gorm:"uniqueIndex;not null"`
 	Password string `gorm:"not null"`
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
 
 	Websites []Website `gorm:"foreignKey:UserID"`
 }

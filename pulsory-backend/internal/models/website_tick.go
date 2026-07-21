@@ -6,14 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-type WebsiteStatus string
-
-const (
-	StatusUp      WebsiteStatus = "Up"
-	StatusDown    WebsiteStatus = "Down"
-	StatusUnknown WebsiteStatus = "Unknown"
-)
-
 type WebsiteTick struct {
 	ID uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
 
@@ -21,10 +13,12 @@ type WebsiteTick struct {
 
 	Status WebsiteStatus `gorm:"type:varchar(20);not null"`
 
-	RegionID uuid.UUID `gorm:"type:uuid;not null"`
-	WebsiteID uuid.UUID `gorm:"type:uuid;not null"`
+	RegionID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	Region  Region  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	WebsiteID uuid.UUID `gorm:"type:uuid;not null;index"`
+
+	Region Region `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+
 	Website Website `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 
 	CreatedAt time.Time

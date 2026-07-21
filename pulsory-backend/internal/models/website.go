@@ -11,11 +11,13 @@ type Website struct {
 
 	URL string `gorm:"not null"`
 
-	UserID uuid.UUID `gorm:"type:uuid;not null"`
-
-	TimeAdded time.Time `gorm:"not null"`
+	UserID uuid.UUID `gorm:"type:uuid;not null;index"`
 
 	User User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+
+	TimeAdded time.Time `gorm:"autoCreateTime"`
+
+	UpdatedAt time.Time
 
 	Ticks []WebsiteTick `gorm:"foreignKey:WebsiteID"`
 }
