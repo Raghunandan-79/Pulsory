@@ -13,6 +13,7 @@ func RegisterRoutes(router *gin.Engine) {
 			user := v1.Group("user")
 			{	
 				user.POST("/signup", handlers.Signup)
+				user.POST("/signin", handlers.Signin)
 			}
 
 			website := v1.Group("website")
